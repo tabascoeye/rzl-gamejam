@@ -26,7 +26,7 @@ let cursors: phaser.CursorKeys
 let brownbox : phaser.Sprite
 
 function create() {
-    game.physics.startSystem(Phaser.Physics.ARCADE)
+    game.physics.startSystem(Phaser.Physics.P2JS)
 
     let sky = game.add.sprite(0, 0, 'sky')
     sky.scale.set(2,2)
@@ -42,8 +42,7 @@ function create() {
     for (let i = 0; i < 10; i++) {
         let sprite = starSprites.create(i * 50, 0, 'star')
         game.physics.arcade.enable(sprite);
-        let body: Phaser.Physics.Arcade.Body = sprite.body
-        game.debug.body(sprite)
+        let body: Phaser.Physics.P2.Body = sprite.body
         body.bounce.y = 0.3;
         body.bounce.x = 0.3;
         body.gravity.y = 300;
