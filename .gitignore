@@ -4,3 +4,5 @@ node_modules
 stockassets
 typings
 .vscode
+.DS_Store
+.tags*

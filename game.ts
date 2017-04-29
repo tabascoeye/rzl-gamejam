@@ -88,4 +88,3 @@ function update() {
         player.body.velocity.x = 0;
     }
 }
-
