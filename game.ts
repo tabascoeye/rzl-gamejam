@@ -50,6 +50,8 @@ function create() {
     }
     player = game.add.sprite(32, game.world.height - 150, 'dude')
     game.physics.arcade.enable(player)
+    let body : Phaser.Physics.Arcade.Body = player.body
+    body.setSize(, body.height)
     player.body.gravity.y = 300
     player.body.collideWorldBounds = true
     player.animations.add('left', [0, 1], 5, true);
