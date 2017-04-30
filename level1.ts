@@ -10,6 +10,7 @@ module Gamejam {
         blabberDirection = -1
         boss: Phaser.Sprite
         attachedBottles = new Set<Phaser.Sprite>()
+        bottlesToDestroy = new Set<Phaser.Sprite>()
         lastThrowTime = 0
 
         preload() {
@@ -106,6 +107,12 @@ module Gamejam {
                 if (collidedWithArm && sprite.position.y + sprite.height <= playerArm.position.y + 1)
                     if (this.attachedBottles.size < 3)
                         this.attachedBottles.add(sprite)
+
+                if (collidedWithGround && !this.bottlesToDestroy.has(sprite)) {
+                    this.bottlesToDestroy.add(sprite)
+                    sprite.alpha = 0.5
+                    setTimeout(_ => sprite.destroy(), 1000)
+                }
             }, this, true, this.platforms, this.playerTorso, this.playerArm)
             this.game.physics.arcade.collide(this.player, this.platforms)
             this.attachedBottles.forEach(bottle => {
