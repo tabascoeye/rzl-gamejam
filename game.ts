@@ -16,6 +16,7 @@ function preload() {
     game.load.image('brownbox', 'stockassets/brownbox.png')
     game.load.spritesheet('dude', 'assets/blabber624_scaled.png', 444 / 6, 220)
     game.load.image('arm', 'assets/blabberarm624_scaled.png')
+    game.load.image('boss', 'assets/endboss_scaled.png')
 }
 
 let bottleSprites: phaser.Group
@@ -27,6 +28,7 @@ let playerArm: phaser.Sprite
 let cursors: phaser.CursorKeys
 let brownbox: phaser.Sprite
 let blabberDirection = -1
+let boss: phaser.Sprite
 
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE)
@@ -70,6 +72,14 @@ function create() {
     playerTorso.animations.add('right', [3, 4], 5, true)
 
     brownbox = game.add.sprite(700, game.world.height - 64 - 24, 'brownbox')
+
+    boss = game.add.sprite(100, 10, 'boss')
+    game.physics.enable(boss)
+    body = boss.body
+    body.bounce = new Phaser.Point(1.1, 0)
+    body.velocity.x = 200
+    body.collideWorldBounds = true
+
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
 }
@@ -121,6 +131,7 @@ function update() {
 function render() {
     game.debug.text(`player velocity ${playerTorso.body.velocity}`, 16, 16)
     game.debug.text(`arm friction ${playerArm.body.friction}`, 16, 32)
+    game.debug.text(`boss velocity.x=${boss.body.velocity.x}`, 16, 48)
     game.debug.body(playerTorso)
     game.debug.body(playerArm)
     bottleSprites.forEach(s => game.debug.body(s), this)
