@@ -101,7 +101,7 @@ module Gamejam {
                 let collidedWithGround = this.game.physics.arcade.collide(sprite, platforms)
                 let collidedWithArm = this.game.physics.arcade.collide(sprite, playerArm)
                 // must have collided with the arm and be at roughly right height
-                if (collidedWithArm && sprite.position.y + sprite.height > playerArm.position.y + 1)
+                if (collidedWithArm && sprite.position.y + sprite.height <= playerArm.position.y + 1)
                     if (this.attachedBottles.size < 3)
                         this.attachedBottles.add(sprite)
             }, this, true, this.platforms, this.playerTorso, this.playerArm)
@@ -110,6 +110,13 @@ module Gamejam {
                 this.game.physics.arcade.collide(bottle, this.playerBasket)
                 console.log(`collided ${bottle} with basket`)
             }, this)
+            // drop bottles
+            if (this.cursors.down.isDown) {
+                // give each bottle an initial push so it won't be recaught before gravity accelerates it downwards
+                this.attachedBottles.forEach(bottle => bottle.position.y += 5)
+                this.attachedBottles.clear()
+            }
+
 
             if (this.cursors.left.isDown) {
                 //  Move to the left
