@@ -17,6 +17,7 @@ module Gamejam {
             this.game.load.image('sky', 'stockassets/sky.png')
             this.game.load.image('ground', 'stockassets/platform.png')
             this.game.load.image('bottle', 'assets/mateflasche_scaled.png')
+            this.game.load.image('pcb', 'assets/platine_scaled.png')
             this.game.load.spritesheet('dude', 'assets/blabber624_scaled.png', 444 / 6, 220)
             this.game.load.spritesheet('arm', 'assets/blabberarm1248_scaled.png', 148 / 2, 0)
             this.game.load.image('boss', 'assets/endboss_scaled.png')
@@ -46,7 +47,11 @@ module Gamejam {
         }
 
         createBottle(x: number, y: number): Phaser.Sprite {
-            let sprite = this.bottleSprites.create(x, y, 'bottle')
+            let item = 'bottle'
+            if (this.game.rnd.integer() % 2 == 1) {
+                item = 'pcb'
+            }
+            let sprite = this.bottleSprites.create(x, y, item)
             this.game.physics.arcade.enable(sprite);
             let body: Phaser.Physics.Arcade.Body = sprite.body
             body.bounce.y = 0.3;
@@ -156,13 +161,13 @@ module Gamejam {
 
             //  Reset the players velocity (movement)
             if (this.cursors.left.isDown) {
-                this.playerArm.body.velocity.x = -200
-                this.playerTorso.body.velocity.x = -200
+                this.playerArm.body.velocity.x -= 100
+                this.playerTorso.body.velocity.x -= 100
                 this.playerTorso.animations.play('left')
                 this.playerArm.animations.play('left')
             } else if (this.cursors.right.isDown) {
-                this.playerArm.body.velocity.x = 200
-                this.playerTorso.body.velocity.x = 200
+                this.playerArm.body.velocity.x += 100
+                this.playerTorso.body.velocity.x += 100
                 this.playerTorso.animations.play('right')
                 this.playerArm.animations.play('right')
             } else {
@@ -228,8 +233,8 @@ module Gamejam {
         }
 
         render() {
-            this.game.debug.text(`player velocity=${this.playerTorso.body.velocity} attachedBottles.size=${this.attachedBottles.size}`, 16, 16)
-            this.game.debug.text(`boss velocity.x=${this.boss.body.velocity.x}`, 16, 32)
+//            this.game.debug.text(`player velocity=${this.playerTorso.body.velocity} attachedBottles.size=${this.attachedBottles.size}`, 16, 16)
+//            this.game.debug.text(`boss velocity.x=${this.boss.body.velocity.x}`, 16, 32)
             // this.game.debug.body(this.playerTorso)
             // this.game.debug.body(this.playerArm)
             // this.game.debug.body(this.playerBasket)
