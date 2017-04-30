@@ -9,6 +9,7 @@ module Gamejam {
         }
 
         update() {
+            this.game.state.start('Level1', true, false);
             if (this.cursor.down.justUp || this.cursor.up.justUp || this.cursor.left.justUp || this.cursor.right.justUp) {
                 this.game.state.start('Level1', true, false);
             }

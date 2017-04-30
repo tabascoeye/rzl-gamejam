@@ -10,6 +10,7 @@ module Gamejam {
         blabberDirection = -1
         boss: Phaser.Sprite
         attachedBottles = new Set<Phaser.Sprite>()
+        lastThrowTime = 0
 
         preload() {
             this.game.load.image('sky', 'stockassets/sky.png')
@@ -34,16 +35,16 @@ module Gamejam {
             ground.scale.setTo(3, 2)
 
             this.bottleSprites = this.game.add.group()
-            for (let i = 0; i < 10; i++) {
-                this.createBottle(i * 50, 0)
-            }
+            // for (let i = 0; i < 10; i++) {
+            //     this.createBottle(i * 50, 0)
+            // }
 
             this.createPlayer()
             this.createBoss()
             this.cursors = this.game.input.keyboard.createCursorKeys();
         }
 
-        createBottle(x: number, y: number) {
+        createBottle(x: number, y: number): Phaser.Sprite {
             let sprite = this.bottleSprites.create(x, y, 'bottle')
             this.game.physics.arcade.enable(sprite);
             let body: Phaser.Physics.Arcade.Body = sprite.body
@@ -51,6 +52,7 @@ module Gamejam {
             body.bounce.x = 0.3;
             body.gravity.y = 300;
             body.collideWorldBounds = true;
+            return sprite
         }
 
         arcadeBodyOf(sprite: Phaser.Sprite) {
@@ -114,9 +116,8 @@ module Gamejam {
             if (this.cursors.down.isDown) {
                 // give each bottle an initial push so it won't be recaught before gravity accelerates it downwards
                 this.attachedBottles.forEach(bottle => bottle.position.y += 5)
-                this.attachedBottles.clear()
+                this.attachedBottles.clear()                
             }
-
 
             if (this.cursors.left.isDown) {
                 //  Move to the left
@@ -188,15 +189,32 @@ module Gamejam {
                 this.playerBasket.position.x = this.playerArm.position.x + this.playerArm.width
                 this.playerBasket.position.y = this.playerArm.position.y - 100
             }
+
+
+            if ((this.game.time.now - this.lastThrowTime > 5000 && this.bottleSprites.length < 5) || this.bottleSprites.length == 0) {
+                this.lastThrowTime = this.game.time.now
+                this.throwBottle()
+            }
         }
+
+        throwBottle() {
+            let bottle = this.createBottle(this.boss.centerX, this.boss.centerY)
+            let body = this.arcadeBodyOf(bottle)
+            if (this.boss.centerX > this.world.centerX) 
+                body.velocity.x = 50 + Phaser.Math.random(0, 100)
+            else 
+                body.velocity.x = -50 - Phaser.Math.random(0, 100)
+            body.velocity.y = -10
+        }
+
 
         render() {
             this.game.debug.text(`player velocity=${this.playerTorso.body.velocity} attachedBottles.size=${this.attachedBottles.size}`, 16, 16)
-            this.game.debug.text(`boss velocity.x=${this.boss.body.velocity.x}`, 16, 48)
-            this.game.debug.body(this.playerTorso)
-            this.game.debug.body(this.playerArm)
-            this.game.debug.body(this.playerBasket)
-            this.bottleSprites.forEach(s => this.game.debug.body(s), this)
+            this.game.debug.text(`boss velocity.x=${this.boss.body.velocity.x}`, 16, 32)
+            // this.game.debug.body(this.playerTorso)
+            // this.game.debug.body(this.playerArm)
+            // this.game.debug.body(this.playerBasket)
+            // this.bottleSprites.forEach(s => this.game.debug.body(s), this)
         }
     }
 }
