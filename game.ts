@@ -14,9 +14,8 @@ function preload() {
     game.load.image('ground', 'stockassets/platform.png')
     game.load.image('star', 'assets/mateflasche_scaled.png')
     game.load.image('brownbox', 'stockassets/brownbox.png')
-    // game.load.spritesheet('dude', 'stockassets/dude.png', 32, 48)
     game.load.spritesheet('dude', 'assets/blabber624_scaled.png', 444 / 6, 220)
-    game.load.image('arm', 'assets/blabberarm624_scaled.png')
+    game.load.spritesheet('arm', 'assets/blabberarm1248_scaled.png', 148 /2, 0)
 }
 
 let starSprites: phaser.Group
@@ -38,19 +37,19 @@ function create() {
     platforms = game.add.group()
     platforms.enableBody = true
 
-    let ground = platforms.create(0, game.world.height - 64, 'ground');
+    let ground = platforms.create(0, game.world.height - 64, 'ground')
     ground.body.immovable = true
-    ground.scale.setTo(3, 2);
+    ground.scale.setTo(3, 2)
 
     starSprites = game.add.group()
     for (let i = 0; i < 10; i++) {
         let sprite = starSprites.create(i * 50, 0, 'star')
-        game.physics.arcade.enable(sprite);
+        game.physics.arcade.enable(sprite)
         let body: Phaser.Physics.Arcade.Body = sprite.body
-        body.bounce.y = 0.3;
-        body.bounce.x = 0.3;
-        body.gravity.y = 300;
-        body.collideWorldBounds = true;
+        body.bounce.y = 0.3
+        body.bounce.x = 0.3
+        body.gravity.y = 300
+        body.collideWorldBounds = true
     }
 
     player = game.add.group()
@@ -65,10 +64,11 @@ function create() {
     body.collideWorldBounds = true
     playerTorso.animations.add('left', [1, 2], 5, true)
     playerTorso.animations.add('right', [3, 4], 5, true)
+    playerArm.animations.add('left', [0], 0, false)
+    playerArm.animations.add('right', [1], 0, false)
 
-    brownbox = game.add.sprite(700, game.world.height - 64 - 24, 'brownbox')
     //  Our controls.
-    cursors = game.input.keyboard.createCursorKeys();
+    cursors = game.input.keyboard.createCursorKeys()
 }
 
 function update() {
@@ -83,35 +83,40 @@ function update() {
     if (cursors.left.isDown) {
         //  Move to the left
         blabberDirection = -1
-        playerArm.body.velocity.x = -200;
-        playerTorso.body.velocity.x = -200;
-        playerTorso.animations.play('left');
+        playerArm.body.velocity.x = -200
+        playerTorso.body.velocity.x = -200
+        playerTorso.animations.play('left')
+        playerArm.animations.play('left')
+        playerArm
     } else if (cursors.right.isDown) {
         //  Move to the right
         blabberDirection = 1
-        playerArm.body.velocity.x = 200;
-        playerTorso.body.velocity.x = 200;
-        playerTorso.animations.play('right');
+        playerArm.body.velocity.x = 200
+        playerTorso.body.velocity.x = 200
+        playerTorso.animations.play('right')
+        playerArm.animations.play('right')
     } else {
         //  Stand still
-        playerTorso.animations.stop();
+        playerTorso.animations.stop()
         if (blabberDirection > 0) {
             playerTorso.frame = 3
         }
         if (blabberDirection < 0) {
             playerTorso.frame = 0
         }
-        playerArm.body.velocity.x = 0;
-        playerTorso.body.velocity.x = 0;
+        playerArm.body.velocity.x = 0
+        playerTorso.body.velocity.x = 0
     }
     playerArm.body.velocity = playerTorso.body.velocity
     if (blabberDirection < 0) {
-        playerArm.position.x = playerTorso.position.x - 50
-        playerArm.position.y = playerTorso.position.y + 55
+        playerArm.position.x = playerTorso.position.x - 60
+        playerArm.position.y = playerTorso.position.y + 90
+        playerTorso.body.setSize(55, 200, 10, 0);
     }
     if (blabberDirection > 0) {
-        playerArm.position.x = playerTorso.position.x + 40
-        playerArm.position.y = playerTorso.position.y + 55
+        playerArm.position.x = playerTorso.position.x + 50
+        playerArm.position.y = playerTorso.position.y + 90
+        playerTorso.body.setSize(55, 200, 0, 0);
     }
 }
 
