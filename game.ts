@@ -107,11 +107,11 @@ function update() {
     playerArm.body.velocity = playerTorso.body.velocity
     if (blabberDirection < 0) {
         playerArm.position.x = playerTorso.position.x - 50
-        playerArm.position.y = playerTorso.position.y + 55 
+        playerArm.position.y = playerTorso.position.y + 55
     }
     if (blabberDirection > 0) {
         playerArm.position.x = playerTorso.position.x + 40
-        playerArm.position.y = playerTorso.position.y + 55         
+        playerArm.position.y = playerTorso.position.y + 55
     }
 }
 
