@@ -6,7 +6,6 @@ module Gamejam {
         playerTorso: Phaser.Sprite
         playerArm: Phaser.Sprite
         cursors: Phaser.CursorKeys
-        brownbox: Phaser.Sprite
         blabberDirection = -1
         boss: Phaser.Sprite
 
@@ -14,7 +13,6 @@ module Gamejam {
             this.game.load.image('sky', 'stockassets/sky.png')
             this.game.load.image('ground', 'stockassets/platform.png')
             this.game.load.image('bottle', 'assets/mateflasche_scaled.png')
-            this.game.load.image('brownbox', 'stockassets/brownbox.png')
             this.game.load.spritesheet('dude', 'assets/blabber624_scaled.png', 444 / 6, 220)
             this.game.load.spritesheet('arm', 'assets/blabberarm1248_scaled.png', 148 / 2, 0)
             this.game.load.image('boss', 'assets/endboss_scaled.png')
@@ -40,7 +38,6 @@ module Gamejam {
 
             this.createPlayer()
             this.createBoss()
-            this.brownbox = this.game.add.sprite(700, this.game.world.height - 64 - 24, 'brownbox')
             this.cursors = this.game.input.keyboard.createCursorKeys();
         }
 
