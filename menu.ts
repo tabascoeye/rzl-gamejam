@@ -6,16 +6,25 @@ module Gamejam {
         logo: Phaser.Sprite
         start: Phaser.Button
         about: Phaser.Button
+        start_sound: Phaser.Sound
+        about_sound: Phaser.Sound
         scalesize = .6
+        lasthover_about = false
+        lasthover_start = false
 
         preload() {
             this.load.image('start', 'assets/Ausrufezeichen.png')
             this.load.image('about', 'assets/Fragezeichen.png')
             this.load.image('logo', 'assets/Dienstag.png')
             this.load.image('blabber','assets/blabber_kopf_scaled.png')
+            this.load.audio('start-sound', 'assets/start.ogg');
+            this.load.audio('about-sound', 'assets/about.ogg');
         }
 
         create() {
+            this.start_sound = this.add.audio('start-sound')
+            this.about_sound = this.add.audio('about-sound')
+
             this.game.physics.startSystem(Phaser.Physics.ARCADE);
             this.logo = this.add.sprite(0, 0, 'logo')
             this.logo.scale.setTo(.6,.6)
@@ -38,7 +47,6 @@ module Gamejam {
             this.about = this.add.button(260, this.game.world.height - 200,
                 'about', this.aboutGame, this, 1, 0, 2);
             this.about.scale.setTo(.35,.35)
-
         }
 
         update() {
@@ -54,6 +62,24 @@ module Gamejam {
             this.scalesize -= 0.01
             if(this.scalesize < .5) {
                 this.scalesize = .6
+            }
+
+            if (this.about.input.pointerOver()) {
+                if ( this.lasthover_about == false) {
+                    this.about_sound.play()
+                }
+                this.lasthover_about = true
+            } else {
+                this.lasthover_about = false
+            }
+
+            if (this.start.input.pointerOver()) {
+                if (this.lasthover_start == false) {
+                    this.start_sound.play()
+                }
+                this.lasthover_start = true
+            } else {
+                this.lasthover_start = false
             }
         }
 
