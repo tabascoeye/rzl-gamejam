@@ -5,9 +5,11 @@ module Gamejam {
         player: Phaser.Group
         playerTorso: Phaser.Sprite
         playerArm: Phaser.Sprite
+        playerBasket: Phaser.Sprite
         cursors: Phaser.CursorKeys
         blabberDirection = -1
         boss: Phaser.Sprite
+        attachedBottles = new Set<Phaser.Sprite>()
 
         preload() {
             this.game.load.image('sky', 'stockassets/sky.png')
@@ -84,27 +86,65 @@ module Gamejam {
             this.playerTorso.animations.add('right', [3, 4], 5, true)
             this.playerArm.animations.add('left', [0], 0, false)
             this.playerArm.animations.add('right', [1], 0, false)
+
+            this.playerBasket = this.player.create(this.playerArm.position.x - 1, this.playerArm.position.y - 100, '')
+            this.game.physics.arcade.enable(this.playerBasket)
+            this.playerBasket.scale.multiply(0.1, 5)
+            this.playerBasket.body.immovable = true
         }
 
         update() {
-            this.bottleSprites.forEach((sprite, platforms, player) => {
+            let directionChanged = false
+            this.bottleSprites.forEach((sprite, platforms, playerTorso, playerArm) => {
                 let body: Phaser.Physics.Arcade.Body = sprite.body
-                this.game.physics.arcade.collide(sprite, platforms);
-                this.game.physics.arcade.collide(sprite, player);
-            }, this, true, this.platforms, this.player)
+                this.game.physics.arcade.collide(sprite, platforms)
+                this.game.physics.arcade.collide(sprite, playerTorso)
+                if (this.game.physics.arcade.collide(sprite, playerArm))
+                    if (this.attachedBottles.size < 3)
+                        this.attachedBottles.add(sprite)
+            }, this, true, this.platforms, this.playerTorso, this.playerArm)
             this.game.physics.arcade.collide(this.player, this.platforms)
+            this.attachedBottles.forEach(bottle => {
+                this.game.physics.arcade.collide(bottle, this.playerBasket)
+                console.log(`collided ${bottle} with basket`)
+            }, this)
+
+            if (this.cursors.left.isDown) {
+                //  Move to the left
+                if (this.blabberDirection != -1) {
+                    directionChanged = true
+                    this.blabberDirection = -1
+                }
+            } else if (this.cursors.right.isDown) {
+                //  Move to the right
+                if (this.blabberDirection != 1) {
+                    directionChanged = true
+                    this.blabberDirection = 1
+                }
+            }
+
+            if (directionChanged && this.blabberDirection < 0) {
+                this.attachedBottles.forEach(bottle => {
+                    let playerCenter = this.playerTorso.position.x + (this.playerTorso.width / 2) - 20
+                    console.log(`playerCenter = ${playerCenter}`)
+                    bottle.position.x = playerCenter - (bottle.position.x - playerCenter)
+                }, this)
+            }
+            if (directionChanged && this.blabberDirection > 0) {
+                this.attachedBottles.forEach(bottle => {
+                    let playerCenter = this.playerTorso.position.x + (this.playerTorso.width / 2) - 20
+                    console.log(`playerCenter = ${playerCenter}`)
+                    bottle.position.x = playerCenter + (playerCenter - bottle.position.x)
+                }, this)
+            }
 
             //  Reset the players velocity (movement)
             if (this.cursors.left.isDown) {
-                //  Move to the left
-                this.blabberDirection = -1
                 this.playerArm.body.velocity.x = -200
                 this.playerTorso.body.velocity.x = -200
                 this.playerTorso.animations.play('left')
                 this.playerArm.animations.play('left')
             } else if (this.cursors.right.isDown) {
-                //  Move to the right
-                this.blabberDirection = 1
                 this.playerArm.body.velocity.x = 200
                 this.playerTorso.body.velocity.x = 200
                 this.playerTorso.animations.play('right')
@@ -122,24 +162,31 @@ module Gamejam {
                 this.playerTorso.body.velocity.x = 0
             }
             this.playerArm.body.velocity = this.playerTorso.body.velocity
+            // process direction changes
             if (this.blabberDirection < 0) {
                 this.playerArm.position.x = this.playerTorso.position.x - 60
                 this.playerArm.position.y = this.playerTorso.position.y + 90
                 this.playerTorso.body.setSize(55, 200, 10, 0);
+
+                this.playerBasket.position.x = this.playerArm.position.x - 1
+                this.playerBasket.position.y = this.playerArm.position.y - 100
             }
             if (this.blabberDirection > 0) {
                 this.playerArm.position.x = this.playerTorso.position.x + 50
                 this.playerArm.position.y = this.playerTorso.position.y + 90
                 this.playerTorso.body.setSize(55, 200, 0, 0);
+
+                this.playerBasket.position.x = this.playerArm.position.x + this.playerArm.width
+                this.playerBasket.position.y = this.playerArm.position.y - 100
             }
         }
 
         render() {
-            this.game.debug.text(`player velocity ${this.playerTorso.body.velocity}`, 16, 16)
-            this.game.debug.text(`arm friction ${this.playerArm.body.friction}`, 16, 32)
+            this.game.debug.text(`player velocity=${this.playerTorso.body.velocity} attachedBottles.size=${this.attachedBottles.size}`, 16, 16)
             this.game.debug.text(`boss velocity.x=${this.boss.body.velocity.x}`, 16, 48)
             this.game.debug.body(this.playerTorso)
             this.game.debug.body(this.playerArm)
+            this.game.debug.body(this.playerBasket)
             this.bottleSprites.forEach(s => this.game.debug.body(s), this)
         }
     }
