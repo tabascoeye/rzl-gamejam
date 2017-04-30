@@ -12,7 +12,7 @@ function preload() {
     console.log("hello preload")
     game.load.image('sky', 'stockassets/sky.png')
     game.load.image('ground', 'stockassets/platform.png')
-    game.load.image('star', 'assets/mateflasche_scaled.png')
+    game.load.image('bottle', 'assets/mateflasche_scaled.png')
     game.load.image('brownbox', 'stockassets/brownbox.png')
     game.load.spritesheet('dude', 'assets/blabber624_scaled.png', 444 / 6, 220)
     game.load.spritesheet('arm', 'assets/blabberarm1248_scaled.png', 148 /2, 0)
@@ -45,26 +45,51 @@ function create() {
 
     bottleSprites = game.add.group()
     for (let i = 0; i < 10; i++) {
-        let sprite = bottleSprites.create(i * 50, 0, 'star')
-        game.physics.arcade.enable(sprite);
-        let body: Phaser.Physics.Arcade.Body = sprite.body
-        body.bounce.y = 0.3
-        body.bounce.x = 0.3
-        body.gravity.y = 300
-        body.collideWorldBounds = true
+        createBottle(i * 50, 0)
     }
 
+    createPlayer()
+    createBoss()
+    brownbox = game.add.sprite(700, game.world.height - 64 - 24, 'brownbox')
+    cursors = game.input.keyboard.createCursorKeys();
+}
+
+function createBottle(x: number, y: number) {
+    let sprite = bottleSprites.create(x, y, 'bottle')
+    game.physics.arcade.enable(sprite);
+    let body: Phaser.Physics.Arcade.Body = sprite.body
+    body.bounce.y = 0.3;
+    body.bounce.x = 0.3;
+    body.gravity.y = 300;
+    body.collideWorldBounds = true;
+}
+
+function arcadeBodyOf(sprite: Phaser.Sprite) {
+    let body: Phaser.Physics.Arcade.Body = sprite.body
+    return body
+}
+
+function createBoss() {
+    boss = game.add.sprite(100, 10, 'boss')
+    game.physics.enable(boss)
+    let body = arcadeBodyOf(boss)
+    body.bounce = new Phaser.Point(1.1, 0)
+    body.velocity.x = 200
+    body.collideWorldBounds = true
+}
+
+function createPlayer() {
     player = game.add.group()
 
     playerArm = player.create(80, game.world.height - 120, 'arm')
     game.physics.arcade.enable(playerArm)
-    let body: Phaser.Physics.Arcade.Body = playerArm.body
+    let body = arcadeBodyOf(playerArm)
     body.immovable = true
     body.setSize(playerArm.body.width, playerArm.body.height * 0.8, 0, playerArm.body.height * 0.1)
 
     playerTorso = player.create(132, game.world.height - 150, 'dude')
     game.physics.arcade.enable(playerTorso)
-    body = playerTorso.body
+    body = arcadeBodyOf(playerTorso)
     body.setSize(body.width * 0.7, body.height, body.width * 0.1, 0)
     body.gravity.y = 300
     body.collideWorldBounds = true
@@ -72,18 +97,6 @@ function create() {
     playerTorso.animations.add('right', [3, 4], 5, true)
     playerArm.animations.add('left', [0], 0, false)
     playerArm.animations.add('right', [1], 0, false)
-
-    brownbox = game.add.sprite(700, game.world.height - 64 - 24, 'brownbox')
-
-    boss = game.add.sprite(100, 10, 'boss')
-    game.physics.enable(boss)
-    body = boss.body
-    body.bounce = new Phaser.Point(1.1, 0)
-    body.velocity.x = 200
-    body.collideWorldBounds = true
-
-    //  Our controls.
-    cursors = game.input.keyboard.createCursorKeys()
 }
 
 function update() {
@@ -102,7 +115,6 @@ function update() {
         playerTorso.body.velocity.x = -200
         playerTorso.animations.play('left')
         playerArm.animations.play('left')
-        playerArm
     } else if (cursors.right.isDown) {
         //  Move to the right
         blabberDirection = 1
