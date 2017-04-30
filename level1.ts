@@ -104,14 +104,13 @@ module Gamejam {
                 let collidedWithGround = this.game.physics.arcade.collide(sprite, platforms)
                 let collidedWithArm = this.game.physics.arcade.collide(sprite, playerArm)
                 // must have collided with the arm and be at roughly right height
-                if (collidedWithArm && sprite.position.y + sprite.height <= playerArm.position.y + 1)
-                    if (this.attachedBottles.size < 3)
+                if (collidedWithArm && sprite.position.y + sprite.height <= playerArm.position.y + 1) {
+                    if (this.attachedBottles.size < 3) {
                         this.attachedBottles.add(sprite)
-
-                if (collidedWithGround && !this.bottlesToDestroy.has(sprite)) {
-                    this.bottlesToDestroy.add(sprite)
-                    sprite.alpha = 0.5
-                    setTimeout(_ => sprite.destroy(), 1000)
+                    }
+                }
+                if (collidedWithGround) {
+                    this.initiateBottleDestruction(sprite)
                 }
             }, this, true, this.platforms, this.playerTorso, this.playerArm)
             this.game.physics.arcade.collide(this.player, this.platforms)
@@ -123,7 +122,7 @@ module Gamejam {
             if (this.cursors.down.isDown) {
                 // give each bottle an initial push so it won't be recaught before gravity accelerates it downwards
                 this.attachedBottles.forEach(bottle => bottle.position.y += 5)
-                this.attachedBottles.clear()                
+                this.attachedBottles.clear()
             }
 
             if (this.cursors.left.isDown) {
@@ -207,13 +206,26 @@ module Gamejam {
         throwBottle() {
             let bottle = this.createBottle(this.boss.centerX, this.boss.centerY)
             let body = this.arcadeBodyOf(bottle)
-            if (this.boss.centerX > this.world.centerX) 
+            if (this.boss.centerX > this.world.centerX)
                 body.velocity.x = 50 + Phaser.Math.random(0, 100)
-            else 
+            else
                 body.velocity.x = -50 - Phaser.Math.random(0, 100)
             body.velocity.y = -10
         }
 
+        initiateBottleDestruction(bottle: Phaser.Sprite) {
+            if (this.bottlesToDestroy.has(bottle))
+                return
+            this.bottlesToDestroy.add(bottle)
+            bottle.alpha = 0.5
+            bottle.body.angularVelocity = 150
+            bottle.anchor.set(0.5, 0.5)
+            bottle.position.add(0, bottle.height / 2)
+            setTimeout(_ => {
+                bottle.destroy()
+                this.bottlesToDestroy.delete(bottle)
+            }, 1000)
+        }
 
         render() {
             this.game.debug.text(`player velocity=${this.playerTorso.body.velocity} attachedBottles.size=${this.attachedBottles.size}`, 16, 16)
