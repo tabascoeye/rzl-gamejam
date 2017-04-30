@@ -14,12 +14,11 @@ function preload() {
     game.load.image('ground', 'stockassets/platform.png')
     game.load.image('star', 'assets/mateflasche_scaled.png')
     game.load.image('brownbox', 'stockassets/brownbox.png')
-    // game.load.spritesheet('dude', 'stockassets/dude.png', 32, 48)
     game.load.spritesheet('dude', 'assets/blabber624_scaled.png', 444 / 6, 220)
     game.load.image('arm', 'assets/blabberarm624_scaled.png')
 }
 
-let starSprites: phaser.Group
+let bottleSprites: phaser.Group
 
 let platforms: phaser.Group
 let player: phaser.Group
@@ -42,9 +41,9 @@ function create() {
     ground.body.immovable = true
     ground.scale.setTo(3, 2);
 
-    starSprites = game.add.group()
+    bottleSprites = game.add.group()
     for (let i = 0; i < 10; i++) {
-        let sprite = starSprites.create(i * 50, 0, 'star')
+        let sprite = bottleSprites.create(i * 50, 0, 'star')
         game.physics.arcade.enable(sprite);
         let body: Phaser.Physics.Arcade.Body = sprite.body
         body.bounce.y = 0.3;
@@ -54,13 +53,17 @@ function create() {
     }
 
     player = game.add.group()
+    
     playerArm = player.create(80, game.world.height - 120, 'arm')
     game.physics.arcade.enable(playerArm)
-    playerArm.body.immovable = true
+    let body: Phaser.Physics.Arcade.Body = playerArm.body
+    body.immovable = true
+    body.setSize(playerArm.body.width, playerArm.body.height * 0.8, 0, playerArm.body.height * 0.1)
+    
     playerTorso = player.create(132, game.world.height - 150, 'dude')
     game.physics.arcade.enable(playerTorso)
-    let body: Phaser.Physics.Arcade.Body = playerTorso.body
-    // body.setSize(, body.height)
+    body = playerTorso.body
+    body.setSize(body.width * 0.7, body.height, body.width * 0.1, 0)
     body.gravity.y = 300
     body.collideWorldBounds = true
     playerTorso.animations.add('left', [1, 2], 5, true)
@@ -72,7 +75,7 @@ function create() {
 }
 
 function update() {
-    starSprites.forEach((sprite, platforms, player) => {
+    bottleSprites.forEach((sprite, platforms, player) => {
         let body: Phaser.Physics.Arcade.Body = sprite.body
         game.physics.arcade.collide(sprite, platforms);
         game.physics.arcade.collide(sprite, player);
@@ -117,7 +120,8 @@ function update() {
 
 function render() {
     game.debug.text(`player velocity ${playerTorso.body.velocity}`, 16, 16)
+    game.debug.text(`arm friction ${playerArm.body.friction}`, 16, 32)
     game.debug.body(playerTorso)
     game.debug.body(playerArm)
-    starSprites.forEach(s => game.debug.body(s), this)
+    bottleSprites.forEach(s => game.debug.body(s), this)
 }
