@@ -16,9 +16,10 @@ function preload() {
     game.load.image('brownbox', 'stockassets/brownbox.png')
     game.load.spritesheet('dude', 'assets/blabber624_scaled.png', 444 / 6, 220)
     game.load.spritesheet('arm', 'assets/blabberarm1248_scaled.png', 148 /2, 0)
+    game.load.image('boss', 'assets/endboss_scaled.png')
 }
 
-let starSprites: phaser.Group
+let bottleSprites: phaser.Group
 
 let platforms: phaser.Group
 let player: phaser.Group
@@ -27,6 +28,7 @@ let playerArm: phaser.Sprite
 let cursors: phaser.CursorKeys
 let brownbox: phaser.Sprite
 let blabberDirection = -1
+let boss: phaser.Sprite
 
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE)
@@ -41,10 +43,10 @@ function create() {
     ground.body.immovable = true
     ground.scale.setTo(3, 2)
 
-    starSprites = game.add.group()
+    bottleSprites = game.add.group()
     for (let i = 0; i < 10; i++) {
-        let sprite = starSprites.create(i * 50, 0, 'star')
-        game.physics.arcade.enable(sprite)
+        let sprite = bottleSprites.create(i * 50, 0, 'star')
+        game.physics.arcade.enable(sprite);
         let body: Phaser.Physics.Arcade.Body = sprite.body
         body.bounce.y = 0.3
         body.bounce.x = 0.3
@@ -53,13 +55,17 @@ function create() {
     }
 
     player = game.add.group()
+
     playerArm = player.create(80, game.world.height - 120, 'arm')
     game.physics.arcade.enable(playerArm)
-    playerArm.body.immovable = true
+    let body: Phaser.Physics.Arcade.Body = playerArm.body
+    body.immovable = true
+    body.setSize(playerArm.body.width, playerArm.body.height * 0.8, 0, playerArm.body.height * 0.1)
+
     playerTorso = player.create(132, game.world.height - 150, 'dude')
     game.physics.arcade.enable(playerTorso)
-    let body: Phaser.Physics.Arcade.Body = playerTorso.body
-    // body.setSize(, body.height)
+    body = playerTorso.body
+    body.setSize(body.width * 0.7, body.height, body.width * 0.1, 0)
     body.gravity.y = 300
     body.collideWorldBounds = true
     playerTorso.animations.add('left', [1, 2], 5, true)
@@ -67,12 +73,21 @@ function create() {
     playerArm.animations.add('left', [0], 0, false)
     playerArm.animations.add('right', [1], 0, false)
 
+    brownbox = game.add.sprite(700, game.world.height - 64 - 24, 'brownbox')
+
+    boss = game.add.sprite(100, 10, 'boss')
+    game.physics.enable(boss)
+    body = boss.body
+    body.bounce = new Phaser.Point(1.1, 0)
+    body.velocity.x = 200
+    body.collideWorldBounds = true
+
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys()
 }
 
 function update() {
-    starSprites.forEach((sprite, platforms, player) => {
+    bottleSprites.forEach((sprite, platforms, player) => {
         let body: Phaser.Physics.Arcade.Body = sprite.body
         game.physics.arcade.collide(sprite, platforms);
         game.physics.arcade.collide(sprite, player);
@@ -122,7 +137,9 @@ function update() {
 
 function render() {
     game.debug.text(`player velocity ${playerTorso.body.velocity}`, 16, 16)
+    game.debug.text(`arm friction ${playerArm.body.friction}`, 16, 32)
+    game.debug.text(`boss velocity.x=${boss.body.velocity.x}`, 16, 48)
     game.debug.body(playerTorso)
     game.debug.body(playerArm)
-    starSprites.forEach(s => game.debug.body(s), this)
+    bottleSprites.forEach(s => game.debug.body(s), this)
 }
