@@ -9,8 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "phaser-ce": "^2.7.7",
-    "requirejs": "^2.3.3"
+    "phaser-ce": "^2.7.7"
   },
   "devDependencies": {
     "typings": "^2.1.1"

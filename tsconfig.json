@@ -6,7 +6,8 @@
         "typeRoots": [
             "lib"
         ],
-        "watch": true
+        "watch": true,
+        "outFile": "game.js"
     },
     "compileOnSave": true
 }
