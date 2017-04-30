@@ -111,6 +111,9 @@ module Gamejam {
                 if (collidedWithGround && !this.bottlesToDestroy.has(sprite)) {
                     this.bottlesToDestroy.add(sprite)
                     sprite.alpha = 0.5
+                    body.angularVelocity = 150
+                    sprite.anchor.set(0.5, 0.5)
+                    sprite.position.add(0, sprite.height/2)
                     setTimeout(_ => sprite.destroy(), 1000)
                 }
             }, this, true, this.platforms, this.playerTorso, this.playerArm)
