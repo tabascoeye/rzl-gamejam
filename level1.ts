@@ -9,6 +9,7 @@ module Gamejam {
         cursors: Phaser.CursorKeys
         blabberDirection = -1
         boss: Phaser.Sprite
+        music: Phaser.Sound
         attachedBottles = new Set<Phaser.Sprite>()
         bottlesToDestroy = new Set<Phaser.Sprite>()
         lastThrowTime = 0
@@ -21,11 +22,13 @@ module Gamejam {
             this.game.load.spritesheet('dude', 'assets/blabber624_scaled.png', 444 / 6, 220)
             this.game.load.spritesheet('arm', 'assets/blabberarm1248_scaled.png', 148 / 2, 0)
             this.game.load.image('boss', 'assets/endboss_scaled.png')
+            this.load.audio('level01', 'assets/level01.ogg');
         }
 
         create() {
             this.game.physics.startSystem(Phaser.Physics.ARCADE)
-
+            this.music = this.add.audio('level01',)
+            this.music.loopFull()
             let sky = this.game.add.sprite(0, 0, 'sky')
             sky.scale.set(2, 2)
 
