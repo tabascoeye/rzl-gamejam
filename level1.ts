@@ -95,11 +95,13 @@ module Gamejam {
 
         update() {
             let directionChanged = false
-            this.bottleSprites.forEach((sprite, platforms, playerTorso, playerArm) => {
+            this.bottleSprites.forEach((sprite: Phaser.Sprite, platforms, playerTorso, playerArm) => {
                 let body: Phaser.Physics.Arcade.Body = sprite.body
-                this.game.physics.arcade.collide(sprite, platforms)
                 this.game.physics.arcade.collide(sprite, playerTorso)
-                if (this.game.physics.arcade.collide(sprite, playerArm))
+                let collidedWithGround = this.game.physics.arcade.collide(sprite, platforms)
+                let collidedWithArm = this.game.physics.arcade.collide(sprite, playerArm)
+                // must have collided with the arm and be at roughly right height
+                if (collidedWithArm && sprite.position.y + sprite.height > playerArm.position.y + 1)
                     if (this.attachedBottles.size < 3)
                         this.attachedBottles.add(sprite)
             }, this, true, this.platforms, this.playerTorso, this.playerArm)
