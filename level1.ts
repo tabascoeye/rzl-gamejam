@@ -1,4 +1,7 @@
 module Gamejam {
+
+    const PLAYER_DEFAULT_VELOCITY = 350
+
     export class Level1 extends Phaser.State {
         bottleSprites: Phaser.Group
         platforms: Phaser.Group
@@ -88,8 +91,8 @@ module Gamejam {
             this.boss = this.game.add.sprite(100, 10, 'boss')
             this.game.physics.enable(this.boss)
             let body = this.arcadeBodyOf(this.boss)
-            body.bounce = new Phaser.Point(1.1, 0)
-            body.velocity.x = 200
+            body.bounce = new Phaser.Point(1, 0)
+            body.velocity.x = 400
             body.collideWorldBounds = true
         }
 
@@ -189,13 +192,13 @@ module Gamejam {
 
             //  Reset the players velocity (movement)
             if (this.cursors.left.isDown) {
-                this.playerArm.body.velocity.x = -300
-                this.playerTorso.body.velocity.x = -300
+                this.playerArm.body.velocity.x = -PLAYER_DEFAULT_VELOCITY
+                this.playerTorso.body.velocity.x = -PLAYER_DEFAULT_VELOCITY
                 this.playerTorso.animations.play('left')
                 this.playerArm.animations.play('left')
             } else if (this.cursors.right.isDown) {
-                this.playerArm.body.velocity.x = 300
-                this.playerTorso.body.velocity.x = 300
+                this.playerArm.body.velocity.x = PLAYER_DEFAULT_VELOCITY
+                this.playerTorso.body.velocity.x = PLAYER_DEFAULT_VELOCITY
                 this.playerTorso.animations.play('right')
                 this.playerArm.animations.play('right')
             } else {
