@@ -16,6 +16,7 @@ module Gamejam {
         music: Phaser.Sound
         bottle_sound: Phaser.Sound
         pcb_sound: Phaser.Sound
+        throw_sound: Phaser.Sound
         attachedBottles = new Set<Phaser.Sprite>()
         bottlesToDestroy = new Set<Phaser.Sprite>()
         lastThrowTime = 0
@@ -39,6 +40,7 @@ module Gamejam {
             this.load.audio('level01', 'assets/audio/level01.ogg');
             this.load.audio('mate_snd', 'assets/audio/mate1.ogg');
             this.load.audio('pcb_snd', 'assets/audio/schrott1.ogg');
+            this.load.audio('throw_snd', 'assets/audio/throw.ogg');
         }
 
         create() {
@@ -48,6 +50,7 @@ module Gamejam {
 
             this.bottle_sound = this.add.audio('mate_snd')
             this.pcb_sound = this.add.audio('pcb_snd')
+            this.throw_sound = this.add.audio('throw_snd')
 
             let bg = this.game.add.sprite(0, 0, 'bg')
 
@@ -266,6 +269,7 @@ module Gamejam {
             else
                 body.velocity.x = -50 - Phaser.Math.random(0, 300)
             body.velocity.y = -50
+            this.throw_sound.play()
         }
 
         initiateBottleDestruction(bottle: Phaser.Sprite) {
