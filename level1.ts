@@ -13,6 +13,7 @@ module Gamejam {
         attachedBottles = new Set<Phaser.Sprite>()
         bottlesToDestroy = new Set<Phaser.Sprite>()
         lastThrowTime = 0
+        spacebar: Phaser.Key
 
         preload() {
             this.game.load.image('sky', 'stockassets/sky.png')
@@ -40,13 +41,11 @@ module Gamejam {
             ground.scale.setTo(3, 2)
 
             this.bottleSprites = this.game.add.group()
-            // for (let i = 0; i < 10; i++) {
-            //     this.createBottle(i * 50, 0)
-            // }
-
             this.createPlayer()
             this.createBoss()
+            
             this.cursors = this.game.input.keyboard.createCursorKeys();
+            this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
         }
 
         createBottle(x: number, y: number): Phaser.Sprite {
@@ -127,7 +126,7 @@ module Gamejam {
                 console.log(`collided ${bottle} with basket`)
             }, this)
             // drop bottles
-            if (this.cursors.down.isDown) {
+            if (this.cursors.down.isDown || this.spacebar.isDown) {
                 // give each bottle an initial push so it won't be recaught before gravity accelerates it downwards
                 this.attachedBottles.forEach(bottle => bottle.position.y += 5)
                 this.attachedBottles.clear()
