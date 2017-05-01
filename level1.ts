@@ -16,8 +16,10 @@ module Gamejam {
         lastThrowTime = 0
         spacebar: Phaser.Key
         score: number = 0
+        scoreBanner: Phaser.Text
 
         preload() {
+            this.game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
             this.game.load.image('bg', 'assets/Background1024.png')
             this.game.load.image('ground', 'assets/platform.png')
             this.game.load.image('bottle', 'assets/mateflasche_scaled.png')
@@ -50,9 +52,16 @@ module Gamejam {
             this.bottleSprites = this.game.add.group()
             this.createPlayer()
             this.createBoss()
+            this.createScoreBanner()
 
             this.cursors = this.game.input.keyboard.createCursorKeys();
             this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+        }
+
+        createScoreBanner() {
+            this.scoreBanner = this.game.add.text(16, 16, 'SCORE 0', { font: "40px Arial Black", fill: "#ec008c", align: "center" });
+            this.scoreBanner.setShadow(5, 5, 'rgba(0, 0, 0, 0.5)', 0);
+
         }
 
         createBottle(x: number, y: number): Phaser.Sprite {
@@ -220,11 +229,12 @@ module Gamejam {
                 this.playerBasket.position.y = this.playerArm.position.y - 100
             }
 
-
             if ((this.game.time.now - this.lastThrowTime > 5000 && this.bottleSprites.length < 5) || this.bottleSprites.length == 0) {
                 this.lastThrowTime = this.game.time.now
                 this.throwBottle()
             }
+
+            this.scoreBanner.setText(`SCORE ${this.score}`)
         }
 
         throwBottle() {
