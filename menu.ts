@@ -9,6 +9,8 @@ module Gamejam {
         start_sound: Phaser.Sound
         about_sound: Phaser.Sound
         bg_sound: Phaser.Sound
+        about_txt: Phaser.Text
+        start_txt: Phaser.Text
         scalesize = .6
         lasthover_about = false
         lasthover_start = false
@@ -51,6 +53,10 @@ module Gamejam {
             this.about = this.add.button(260, this.game.world.height - 200,
                 'about', this.aboutGame, this, 1, 0, 2);
             this.about.scale.setTo(.35,.35)
+
+            this.about_txt = this.add.text(290, this.game.world.height - 50, '', { font: "20px Arial black", fill: "#ffffff", align: "center" })
+            this.start_txt = this.add.text(590, this.game.world.height - 50, '', { font: "20px Arial black", fill: "#ffffff", align: "center" })
+
         }
 
         update() {
@@ -71,19 +77,23 @@ module Gamejam {
             if (this.about.input.pointerOver()) {
                 if ( this.lasthover_about == false) {
                     this.about_sound.play()
+                    this.about_txt.text = 'about'
                 }
                 this.lasthover_about = true
             } else {
                 this.lasthover_about = false
+                this.about_txt.text = ''
             }
 
             if (this.start.input.pointerOver()) {
                 if (this.lasthover_start == false) {
                     this.start_sound.play()
+                    this.start_txt.text = 'start'
                 }
                 this.lasthover_start = true
             } else {
                 this.lasthover_start = false
+                this.start_txt.text = ''
             }
         }
 
