@@ -16,7 +16,7 @@ module Gamejam {
         spacebar: Phaser.Key
 
         preload() {
-            this.game.load.image('sky', 'stockassets/sky.png')
+            this.game.load.image('bg', 'assets/Background1024.png')
             this.game.load.image('ground', 'stockassets/platform.png')
             this.game.load.image('bottle', 'assets/mateflasche_scaled.png')
             this.game.load.image('pcb', 'assets/platine_scaled.png')
@@ -30,8 +30,7 @@ module Gamejam {
             this.game.physics.startSystem(Phaser.Physics.ARCADE)
             this.music = this.add.audio('level01',)
             this.music.loopFull()
-            let sky = this.game.add.sprite(0, 0, 'sky')
-            sky.scale.set(2, 2)
+            let bg = this.game.add.sprite(0, 0, 'bg')
 
             this.platforms = this.game.add.group()
             this.platforms.enableBody = true
@@ -43,7 +42,7 @@ module Gamejam {
             this.bottleSprites = this.game.add.group()
             this.createPlayer()
             this.createBoss()
-            
+
             this.cursors = this.game.input.keyboard.createCursorKeys();
             this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
         }
