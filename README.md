@@ -1,4 +1,4 @@
-# rzl-gamejam
+# rzl-gamejam entry "Wird am Dienstag abgeholt"
 Attempt at making a simple game in a weekend
 
 setup
