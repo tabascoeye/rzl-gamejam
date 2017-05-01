@@ -2,6 +2,7 @@ module Gamejam {
     export class Level1 extends Phaser.State {
         bottleSprites: Phaser.Group
         platforms: Phaser.Group
+        crate: Phaser.Sprite
         player: Phaser.Group
         playerTorso: Phaser.Sprite
         playerArm: Phaser.Sprite
@@ -23,6 +24,7 @@ module Gamejam {
             this.game.load.spritesheet('dude', 'assets/blabber624_scaled.png', 444 / 6, 220)
             this.game.load.spritesheet('arm', 'assets/blabberarm1248_scaled.png', 148 / 2, 0)
             this.game.load.image('boss', 'assets/endboss_scaled.png')
+            this.game.load.image('matekasten', 'assets/matekasten_laengs_scaled.png')
             this.load.audio('level01', 'assets/level01.ogg');
         }
 
@@ -35,7 +37,7 @@ module Gamejam {
             this.platforms = this.game.add.group()
             this.platforms.enableBody = true
 
-            let ground = this.platforms.create(0, this.game.world.height - 64, 'ground')
+            let ground : Phaser.Sprite = this.platforms.create(0, this.game.world.height - 64, 'ground')
             ground.body.immovable = true
             ground.scale.setTo(3, 2)
 
@@ -43,6 +45,9 @@ module Gamejam {
             this.createPlayer()
             this.createBoss()
 
+            this.crate = this.game.add.sprite(Phaser.Math.random(100, this.world.width - 100), 0, 'matekasten')
+            this.crate.position.y = ground.position.y - this.crate.height
+            
             this.cursors = this.game.input.keyboard.createCursorKeys();
             this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
         }
@@ -162,13 +167,13 @@ module Gamejam {
 
             //  Reset the players velocity (movement)
             if (this.cursors.left.isDown) {
-                this.playerArm.body.velocity.x -= 100
-                this.playerTorso.body.velocity.x -= 100
+                this.playerArm.body.velocity.x = -300
+                this.playerTorso.body.velocity.x = -300
                 this.playerTorso.animations.play('left')
                 this.playerArm.animations.play('left')
             } else if (this.cursors.right.isDown) {
-                this.playerArm.body.velocity.x += 100
-                this.playerTorso.body.velocity.x += 100
+                this.playerArm.body.velocity.x = 300
+                this.playerTorso.body.velocity.x = 300
                 this.playerTorso.animations.play('right')
                 this.playerArm.animations.play('right')
             } else {
