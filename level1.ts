@@ -15,6 +15,7 @@ module Gamejam {
         bottlesToDestroy = new Set<Phaser.Sprite>()
         lastThrowTime = 0
         spacebar: Phaser.Key
+        score: number = 0
 
         preload() {
             this.game.load.image('bg', 'assets/Background1024.png')
@@ -37,16 +38,18 @@ module Gamejam {
             this.platforms = this.game.add.group()
             this.platforms.enableBody = true
 
-            let ground : Phaser.Sprite = this.platforms.create(0, this.game.world.height - 64, 'ground')
+            let ground : Phaser.Sprite = this.platforms.create(0, this.game.world.height - 16, 'ground')
             ground.body.immovable = true
             ground.scale.setTo(3, 2)
+
+            this.crate = this.game.add.sprite(Phaser.Math.random(150, this.world.width - 150), 0, 'matekasten')
+            this.crate.position.y = ground.position.y - this.crate.height
+            this.game.physics.enable(this.crate)
+            this.crate.body.immovable = true
 
             this.bottleSprites = this.game.add.group()
             this.createPlayer()
             this.createBoss()
-
-            this.crate = this.game.add.sprite(Phaser.Math.random(100, this.world.width - 100), 0, 'matekasten')
-            this.crate.position.y = ground.position.y - this.crate.height
             
             this.cursors = this.game.input.keyboard.createCursorKeys();
             this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
@@ -114,6 +117,7 @@ module Gamejam {
                 this.game.physics.arcade.collide(sprite, playerTorso)
                 let collidedWithGround = this.game.physics.arcade.collide(sprite, platforms)
                 let collidedWithArm = this.game.physics.arcade.collide(sprite, playerArm)
+                let collidedWithCrate = this.game.physics.arcade.collide(sprite, this.crate)
                 // must have collided with the arm and be at roughly right height
                 if (collidedWithArm && sprite.position.y + sprite.height <= playerArm.position.y + 1) {
                     if (this.attachedBottles.size < 3) {
@@ -121,7 +125,16 @@ module Gamejam {
                     }
                 }
                 if (collidedWithGround) {
-                    this.initiateBottleDestruction(sprite)
+                    if (!this.bottlesToDestroy.has(sprite)) {
+                        this.score -= 1
+                        this.initiateBottleDestruction(sprite)
+                    }
+                }
+                if (collidedWithCrate) {
+                    if (!this.bottlesToDestroy.has(sprite)) {
+                        this.score += 1
+                        this.initiateBottleDestruction(sprite)
+                    }
                 }
             }, this, true, this.platforms, this.playerTorso, this.playerArm)
             this.game.physics.arcade.collide(this.player, this.platforms)
@@ -239,8 +252,9 @@ module Gamejam {
         }
 
         render() {
-//            this.game.debug.text(`player velocity=${this.playerTorso.body.velocity} attachedBottles.size=${this.attachedBottles.size}`, 16, 16)
-//            this.game.debug.text(`boss velocity.x=${this.boss.body.velocity.x}`, 16, 32)
+        //    this.game.debug.text(`player velocity=${this.playerTorso.body.velocity} attachedBottles.size=${this.attachedBottles.size}`, 16, 16)
+        //    this.game.debug.text(`boss velocity.x=${this.boss.body.velocity.x}`, 16, 32)
+        //    this.game.debug.text(`score=${this.score}`, 16, 48)
             // this.game.debug.body(this.playerTorso)
             // this.game.debug.body(this.playerArm)
             // this.game.debug.body(this.playerBasket)
