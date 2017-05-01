@@ -22,7 +22,6 @@ module Gamejam {
         scoreBanner: Phaser.Text
 
         preload() {
-            this.game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
             this.game.load.image('bg', 'assets/Background1024.png')
             this.game.load.image('ground', 'assets/platform.png')
             this.game.load.image('bottle', 'assets/mateflasche_scaled.png')
