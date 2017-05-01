@@ -20,6 +20,8 @@ module Gamejam {
         spacebar: Phaser.Key
         score: number = 0
         scoreBanner: Phaser.Text
+        redEmitter: Phaser.Particles.Arcade.Emitter
+        greenEmitter: Phaser.Particles.Arcade.Emitter
 
         preload() {
             this.game.load.image('bg', 'assets/Background1024.png')
@@ -30,7 +32,9 @@ module Gamejam {
             this.game.load.spritesheet('arm', 'assets/blabberarm1248_scaled.png', 148 / 2, 0)
             this.game.load.image('boss', 'assets/endboss_scaled.png')
             this.game.load.image('matekasten', 'assets/matekasten_laengs_scaled.png')
-            this.load.audio('level01', 'assets/level01.ogg');
+            this.game.load.image('redtriangle', 'assets/redtriangle.png')
+            this.game.load.image('greentriangle', 'assets/greentriangle.png')
+            this.load.audio('level01', 'assets/audio/level01.ogg');
         }
 
         create() {
@@ -56,14 +60,19 @@ module Gamejam {
             this.createBoss()
             this.createScoreBanner()
 
+            this.greenEmitter = this.game.add.emitter(this.scoreBanner.centerX, this.scoreBanner.centerY, 200);
+            this.greenEmitter.makeParticles(['greentriangle'], 0, 50, true, true)
+
+            this.redEmitter = this.game.add.emitter(this.scoreBanner.centerX, this.scoreBanner.centerY, 200);
+            this.redEmitter.makeParticles(['redtriangle'], 0, 50, true, true)
+
             this.cursors = this.game.input.keyboard.createCursorKeys();
             this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
         }
 
         createScoreBanner() {
-            this.scoreBanner = this.game.add.text(16, 16, 'SCORE 0', { font: "40px Arial Black", fill: "#ec008c", align: "center" });
+            this.scoreBanner = this.game.add.text(this.world.width - 260, 16, 'SCORE 0', { font: "40px Arial Black", fill: "#ec008c", align: "center" });
             this.scoreBanner.setShadow(5, 5, 'rgba(0, 0, 0, 0.5)', 0);
-
         }
 
         createBottle(x: number, y: number): Phaser.Sprite {
@@ -138,12 +147,14 @@ module Gamejam {
                 if (collidedWithGround) {
                     if (!this.bottlesToDestroy.has(sprite)) {
                         this.score -= 1
+                        this.redEmitter.start(true, 1000, 50, 100)
                         this.initiateBottleDestruction(sprite)
                     }
                 }
                 if (collidedWithCrate) {
                     if (!this.bottlesToDestroy.has(sprite)) {
                         this.score += 1
+                        this.greenEmitter.start(true, 1000, 50, 100)
                         this.initiateBottleDestruction(sprite)
                     }
                 }
