@@ -215,10 +215,10 @@ module Gamejam {
             let bottle = this.createBottle(this.boss.centerX, this.boss.centerY)
             let body = this.arcadeBodyOf(bottle)
             if (this.boss.centerX > this.world.centerX)
-                body.velocity.x = 50 + Phaser.Math.random(0, 100)
+                body.velocity.x = 50 + Phaser.Math.random(0, 300)
             else
-                body.velocity.x = -50 - Phaser.Math.random(0, 100)
-            body.velocity.y = -10
+                body.velocity.x = -50 - Phaser.Math.random(0, 300)
+            body.velocity.y = -50
         }
 
         initiateBottleDestruction(bottle: Phaser.Sprite) {
