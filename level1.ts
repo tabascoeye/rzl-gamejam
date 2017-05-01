@@ -19,7 +19,7 @@ module Gamejam {
 
         preload() {
             this.game.load.image('bg', 'assets/Background1024.png')
-            this.game.load.image('ground', 'stockassets/platform.png')
+            this.game.load.image('ground', 'assets/platform.png')
             this.game.load.image('bottle', 'assets/mateflasche_scaled.png')
             this.game.load.image('pcb', 'assets/platine_scaled.png')
             this.game.load.spritesheet('dude', 'assets/blabber624_scaled.png', 444 / 6, 220)
@@ -50,7 +50,7 @@ module Gamejam {
             this.bottleSprites = this.game.add.group()
             this.createPlayer()
             this.createBoss()
-            
+
             this.cursors = this.game.input.keyboard.createCursorKeys();
             this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
         }
