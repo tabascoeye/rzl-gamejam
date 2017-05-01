@@ -27,7 +27,6 @@ module Gamejam {
             this.start_sound = this.add.audio('start-sound')
             this.about_sound = this.add.audio('about-sound')
             this.bg_sound = this.add.audio('bg')
-
             this.bg_sound.play()
 
             this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -94,6 +93,7 @@ module Gamejam {
         }
 
         aboutGame() {
+            this.bg_sound.stop()
             this.game.state.start('About', true, false)
         }
 

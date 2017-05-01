@@ -14,6 +14,8 @@ module Gamejam {
         blabberDirection = -1
         boss: Phaser.Sprite
         music: Phaser.Sound
+        bottle_sound: Phaser.Sound
+        pcb_sound: Phaser.Sound
         attachedBottles = new Set<Phaser.Sprite>()
         bottlesToDestroy = new Set<Phaser.Sprite>()
         lastThrowTime = 0
@@ -35,12 +37,18 @@ module Gamejam {
             this.game.load.image('redtriangle', 'assets/redtriangle.png')
             this.game.load.image('greentriangle', 'assets/greentriangle.png')
             this.load.audio('level01', 'assets/audio/level01.ogg');
+            this.load.audio('mate_snd', 'assets/audio/mate1.ogg');
+            this.load.audio('pcb_snd', 'assets/audio/schrott1.ogg');
         }
 
         create() {
             this.game.physics.startSystem(Phaser.Physics.ARCADE)
             this.music = this.add.audio('level01',)
             this.music.loopFull()
+
+            this.bottle_sound = this.add.audio('mate_snd')
+            this.pcb_sound = this.add.audio('pcb_snd')
+
             let bg = this.game.add.sprite(0, 0, 'bg')
 
             this.platforms = this.game.add.group()
@@ -268,6 +276,11 @@ module Gamejam {
             bottle.body.angularVelocity = 150
             bottle.anchor.set(0.5, 0.5)
             bottle.position.add(0, bottle.height / 2)
+            if (bottle.key === 'pcb') {
+                this.pcb_sound.play()
+            } else {
+                this.bottle_sound.play()
+            }
             setTimeout(_ => {
                 bottle.destroy()
                 this.bottlesToDestroy.delete(bottle)

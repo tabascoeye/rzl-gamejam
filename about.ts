@@ -2,9 +2,11 @@ module Gamejam {
     export class About extends Phaser.State {
 
         back: Phaser.Button
+        bg_sound: Phaser.Sound
 
         preload() {
             this.load.image('back', 'assets/pfeil.png')
+            this.load.audio('bg', 'assets/audio/menu.ogg');
         }
 
         create() {
@@ -18,12 +20,15 @@ module Gamejam {
             this.add.text(100, 350, 'GFX:   flederrattie', { font: "40px Arial black", fill: "#ff0044", align: "left" })
             this.add.text(100, 400, 'Code:  phil_fry | TabascoEye', { font: "40px Arial black", fill: "#ff0044", align: "left" })
             this.add.text(100, 450, 'SFX:  TabascoEye | echox', { font: "40px Arial black", fill: "#ff0044", align: "left" })
+            this.bg_sound = this.add.audio('bg')
+            this.bg_sound.play()
         }
 
         update() {
         }
 
         goback() {
+            this.bg_sound.stop()
             this.game.state.start('MainMenu', true, false)
         }
 
