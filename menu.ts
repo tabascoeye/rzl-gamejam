@@ -8,6 +8,7 @@ module Gamejam {
         about: Phaser.Button
         start_sound: Phaser.Sound
         about_sound: Phaser.Sound
+        bg_sound: Phaser.Sound
         scalesize = .6
         lasthover_about = false
         lasthover_start = false
@@ -17,13 +18,17 @@ module Gamejam {
             this.load.image('about', 'assets/Fragezeichen.png')
             this.load.image('logo', 'assets/Dienstag.png')
             this.load.image('blabber','assets/blabber_kopf_scaled.png')
-            this.load.audio('start-sound', 'assets/start.ogg');
-            this.load.audio('about-sound', 'assets/about.ogg');
+            this.load.audio('start-sound', 'assets/audio/start.ogg');
+            this.load.audio('about-sound', 'assets/audio/about.ogg');
+            this.load.audio('bg', 'assets/audio/menu.ogg');
         }
 
         create() {
             this.start_sound = this.add.audio('start-sound')
             this.about_sound = this.add.audio('about-sound')
+            this.bg_sound = this.add.audio('bg')
+
+            this.bg_sound.play()
 
             this.game.physics.startSystem(Phaser.Physics.ARCADE);
             this.logo = this.add.sprite(0, 0, 'logo')
@@ -84,6 +89,7 @@ module Gamejam {
         }
 
         go() {
+            this.bg_sound.stop()
             this.game.state.start('Level1', true, false)
         }
 

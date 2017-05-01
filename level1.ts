@@ -30,7 +30,7 @@ module Gamejam {
             this.game.load.spritesheet('arm', 'assets/blabberarm1248_scaled.png', 148 / 2, 0)
             this.game.load.image('boss', 'assets/endboss_scaled.png')
             this.game.load.image('matekasten', 'assets/matekasten_laengs_scaled.png')
-            this.load.audio('level01', 'assets/level01.ogg');
+            this.load.audio('level01', 'assets/audio/level01.ogg');
         }
 
         create() {
