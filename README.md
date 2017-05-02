@@ -1,6 +1,12 @@
 # rzl-gamejam entry "Wird am Dienstag abgeholt"
 Attempt at making a simple game in a weekend
 
+Play
+====
+
+You can play the winning entry of the first RZL gamne jam here: https://tabascoeye.github.io/rzl-gamejam/
+
+
 setup
 =====
 
